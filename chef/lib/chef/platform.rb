@@ -129,17 +129,23 @@ class Chef
           },
           :mswin => {
             :default => {
-              :service => Chef::Provider::Service::Windows
+              :service => Chef::Provider::Service::Windows,
+              :user => Chef::Provider::User::Windows,
+              :group => Chef::Provider::Group::Windows
             }
           },
           :mingw32 => {
             :default => {
-              :service => Chef::Provider::Service::Windows
+              :service => Chef::Provider::Service::Windows,
+              :user => Chef::Provider::User::Windows,
+              :group => Chef::Provider::Group::Windows
             }
           },
           :windows => {
             :default => {
-              :service => Chef::Provider::Service::Windows
+              :service => Chef::Provider::Service::Windows,
+              :user => Chef::Provider::User::Windows,
+              :group => Chef::Provider::Group::Windows
             }
           },
           :solaris  => {},
