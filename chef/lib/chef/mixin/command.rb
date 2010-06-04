@@ -129,6 +129,13 @@ class Chef
       module_function :run_command
       
       def output_of_command(command, args)
+        if RUBY_PLATFORM =~ /mswin|mingw32|windows/
+          require 'systemu'
+          use_systemu = true
+        else
+          use_systemu = false
+        end
+
         Chef::Log.debug("Executing #{command}")
         stderr_string, stdout_string, status = "", "", nil
         
@@ -145,14 +152,22 @@ class Chef
           if args[:timeout]
             begin
               Timeout.timeout(args[:timeout]) do
-                status = popen4(command, args, &exec_processing_block)
+                if use_systemu
+                  status, stdout_string, stderr_string = systemu(args[:command])
+                else
+                  status = popen4(command, args, &exec_processing_block)
+                end
               end
             rescue Timeout::Error => e
               Chef::Log.error("#{command} exceeded timeout #{args[:timeout]}")
               raise(e)
             end
           else
-            status = popen4(command, args, &exec_processing_block)
+            if use_systemu
+              status, stdout_string, stderr_string = systemu(args[:command])
+            else
+              status = popen4(command, args, &exec_processing_block)
+            end
           end
           
           Chef::Log.debug("---- Begin output of #{command} ----")
