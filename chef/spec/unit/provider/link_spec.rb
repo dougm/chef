@@ -314,6 +314,7 @@ describe Chef::Resource::Link do
           end
       
           it "should run 'ln' with the parameters to create the link" do
+            File.stub!(:lchown).and_return(1)
             @provider.should_receive(:shell_out!).with("ln -nfs /tmp/lolololol /tmp/fofile-link")
             @provider.action_create
           end
